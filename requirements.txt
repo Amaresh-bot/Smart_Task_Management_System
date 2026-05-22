@@ -6,8 +6,8 @@ Flask-Migrate==4.0.5
 Flask-CORS==4.0.0
 psycopg[binary]
 python-dotenv==1.0.0
-pandas==2.2.2
-numpy==1.26.4
+pandas
+numpy
 Werkzeug==3.0.1
 eventlet==0.34.2
 gunicorn==21.2.0
