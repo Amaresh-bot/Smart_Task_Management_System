@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | Smart Task Manager{% endblock %}
+
+{% block content %}
+<!-- Welcome Section -->
+<div class="row align-items-center mb-4">
+    <div class="col-md-8">
+        <h1 class="h2 text-white heading-font mb-1" id="dashboard-title">
+            <span class="text-muted fw-normal">Hello,</span> {{ user.username }}!
+        </h1>
+        <p class="text-light-gray small mb-0">Here is your task management hub. Monitor and organize tasks dynamically.</p>
+    </div>
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <button class="btn btn-accent rounded-pill px-4 py-2 d-inline-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addTaskModal" id="btn-add-task-modal">
+            <i class="fa-solid fa-plus"></i>
+            <span>Add New Task</span>
+        </button>
+    </div>
+</div>
+
+<!-- Quick Statistics Bar (Mini-Analytics) -->
+<div class="row g-3 mb-4" id="metrics-quick-bar">
+    <div class="col-6 col-md-3">
+        <div class="card stat-card bg-glass border-dark-glow rounded-3 p-3 d-flex flex-row align-items-center gap-3">
+            <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                <i class="fa-solid fa-list-check"></i>
+            </div>
+            <div>
+                <h6 class="text-muted small mb-0">Total Tasks</h6>
+                <h3 class="text-white fw-bold mb-0" id="stat-total-count">0</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card stat-card bg-glass border-dark-glow rounded-3 p-3 d-flex flex-row align-items-center gap-3">
+            <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <div>
+                <h6 class="text-muted small mb-0">Pending</h6>
+                <h3 class="text-white fw-bold mb-0" id="stat-pending-count">0</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card stat-card bg-glass border-dark-glow rounded-3 p-3 d-flex flex-row align-items-center gap-3">
+            <div class="stat-icon bg-success bg-opacity-10 text-success">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div>
+                <h6 class="text-muted small mb-0">Completed</h6>
+                <h3 class="text-white fw-bold mb-0" id="stat-completed-count">0</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card stat-card bg-glass border-dark-glow rounded-3 p-3 d-flex flex-row align-items-center gap-3">
+            <div class="stat-icon bg-info bg-opacity-10 text-info">
+                <i class="fa-solid fa-chart-pie"></i>
+            </div>
+            <div>
+                <h6 class="text-muted small mb-0">Progress</h6>
+                <h3 class="text-white fw-bold mb-0" id="stat-completion-pct">0%</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filters Bar -->
+<div class="card bg-glass border border-dark-glow rounded-3 p-3 mb-4 animate-fade-in" id="filter-card">
+    <div class="row g-3 align-items-center">
+        <!-- Search bar -->
+        <div class="col-lg-4">
+            <div class="input-group">
+                <span class="input-group-text bg-dark-input border-dark-glow text-muted">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" class="form-control bg-dark-input border-dark-glow text-white" id="filter-search" placeholder="Search tasks by title or details...">
+            </div>
+        </div>
+        
+        <!-- Status Filter -->
+        <div class="col-md-4 col-lg-3">
+            <div class="d-flex align-items-center gap-2">
+                <label for="filter-status" class="small text-muted text-nowrap mb-0">Status:</label>
+                <select class="form-select bg-dark-input border-dark-glow text-white" id="filter-status">
+                    <option value="">All Statuses</option>
+                    <option value="PENDING">Pending</option>
+                    <option value="IN_PROGRESS">In Progress</option>
+                    <option value="COMPLETED">Completed</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Priority Filter -->
+        <div class="col-md-4 col-lg-3">
+            <div class="d-flex align-items-center gap-2">
+                <label for="filter-priority" class="small text-muted text-nowrap mb-0">Priority:</label>
+                <select class="form-select bg-dark-input border-dark-glow text-white" id="filter-priority">
+                    <option value="">All Priorities</option>
+                    <option value="LOW">Low</option>
+                    <option value="MEDIUM">Medium</option>
+                    <option value="HIGH">High</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Reset Button -->
+        <div class="col-md-4 col-lg-2 text-md-end text-lg-start">
+            <button class="btn btn-outline-secondary w-100 border-dark-glow text-light-gray rounded-pill px-3 py-1.5" id="btn-reset-filters">
+                <i class="fa-solid fa-arrows-rotate me-1"></i> Reset
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Task Workspace List -->
+<div class="row g-3" id="tasks-container">
+    <!-- Tasks will be injected dynamically via AJAX JS -->
+    <div class="col-12 text-center py-5" id="tasks-loading-placeholder">
+        <div class="spinner-border text-accent-cyan" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="text-muted small mt-2">Connecting to task database...</p>
+    </div>
+</div>
+
+<!-- Add Task Modal -->
+<div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-glass border border-dark-glow rounded-3 text-light-gray">
+            <div class="modal-header">
+                <h5 class="modal-title text-white" id="addTaskModalLabel">Create New Task</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="add-task-form">
+                <div class="modal-body">
+                    <!-- Title -->
+                    <div class="mb-3">
+                        <label for="task-title" class="form-label small fw-medium">Title <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control bg-dark-input border-dark-glow text-white" id="task-title" required placeholder="Enter task title">
+                    </div>
+                    <!-- Description -->
+                    <div class="mb-3">
+                        <label for="task-description" class="form-label small fw-medium">Description</label>
+                        <textarea class="form-control bg-dark-input border-dark-glow text-white" id="task-description" rows="3" placeholder="Enter task description details..."></textarea>
+                    </div>
+                    <!-- Priority and Status Row -->
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <label for="task-priority" class="form-label small fw-medium">Priority</label>
+                            <select class="form-select bg-dark-input border-dark-glow text-white" id="task-priority">
+                                <option value="LOW">Low</option>
+                                <option value="MEDIUM" selected>Medium</option>
+                                <option value="HIGH">High</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label for="task-status" class="form-label small fw-medium">Status</label>
+                            <select class="form-select bg-dark-input border-dark-glow text-white" id="task-status">
+                                <option value="PENDING" selected>Pending</option>
+                                <option value="IN_PROGRESS">In Progress</option>
+                                <option value="COMPLETED">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary border-dark-glow text-white rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-accent rounded-pill px-4" id="btn-save-task">Create Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Task Modal -->
+<div class="modal fade" id="editTaskModal" tabindex="-1" aria-labelledby="editTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-glass border border-dark-glow rounded-3 text-light-gray">
+            <div class="modal-header">
+                <h5 class="modal-title text-white" id="editTaskModalLabel">Modify Task Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="edit-task-form">
+                <input type="hidden" id="edit-task-id">
+                <div class="modal-body">
+                    <!-- Title -->
+                    <div class="mb-3">
+                        <label for="edit-task-title" class="form-label small fw-medium">Title <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control bg-dark-input border-dark-glow text-white" id="edit-task-title" required placeholder="Enter task title">
+                    </div>
+                    <!-- Description -->
+                    <div class="mb-3">
+                        <label for="edit-task-description" class="form-label small fw-medium">Description</label>
+                        <textarea class="form-control bg-dark-input border-dark-glow text-white" id="edit-task-description" rows="3" placeholder="Enter task description details..."></textarea>
+                    </div>
+                    <!-- Priority and Status Row -->
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <label for="edit-task-priority" class="form-label small fw-medium">Priority</label>
+                            <select class="form-select bg-dark-input border-dark-glow text-white" id="edit-task-priority">
+                                <option value="LOW">Low</option>
+                                <option value="MEDIUM">Medium</option>
+                                <option value="HIGH">High</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label for="edit-task-status" class="form-label small fw-medium">Status</label>
+                            <select class="form-select bg-dark-input border-dark-glow text-white" id="edit-task-status">
+                                <option value="PENDING">Pending</option>
+                                <option value="IN_PROGRESS">In Progress</option>
+                                <option value="COMPLETED">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary border-dark-glow text-white rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-accent rounded-pill px-4" id="btn-update-task">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

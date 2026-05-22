@@ -1,0 +1,304 @@
+/* ==========================================================================
+   Smart Task Manager - Premium Stylesheet
+   Design Paradigm: Modern Dark Mode, Glassmorphism, Micro-animations, Glows
+   ========================================================================== */
+
+/* Cohesive Theme Variables */
+:root {
+    --bg-dark: #090d16;          /* Deep rich background carbon */
+    --bg-card: rgba(17, 24, 39, 0.75); /* Translucent slate-900 */
+    --bg-input: rgba(13, 19, 32, 0.9);
+    --border-glow: rgba(6, 182, 212, 0.15); /* Delicate cyan outline */
+    --border-glow-hover: rgba(6, 182, 212, 0.4);
+    
+    /* Harmonious Curated Colors (HSL Tailored) */
+    --accent-cyan: #06b6d4;      /* High-tech cyan */
+    --accent-purple: #8b5cf6;    /* Premium purple */
+    --accent-indigo: #6366f1;    /* Sleek indigo */
+    
+    --status-pending: #f59e0b;   /* Warm amber */
+    --status-inprogress: #3b82f6;/* Brilliant blue */
+    --status-completed: #10b981; /* Fresh emerald */
+    --status-danger: #ef4444;    /* Crimson red */
+    
+    --text-white: #ffffff;
+    --text-muted: #94a3b8;
+    --text-light-gray: #cbd5e1;
+    
+    /* Shadows & Transitions */
+    --shadow-premium: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --shadow-accent-glow: 0 0 15px rgba(6, 182, 212, 0.25);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base Body Adjustments */
+body.bg-dark-theme {
+    background-color: var(--bg-dark);
+    font-family: 'Inter', sans-serif;
+    color: var(--text-light-gray);
+    overflow-x: hidden;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.08) 0px, transparent 50%);
+    background-attachment: fixed;
+}
+
+h1, h2, h3, h4, h5, h6, .brand-font {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+/* Glassmorphism Styles */
+.bg-glass {
+    background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.border-dark-glow {
+    border-color: var(--border-glow) !important;
+}
+
+.border-glow-danger {
+    border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+.border-glow-danger:hover {
+    border-color: var(--status-danger) !important;
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.2);
+}
+
+/* Shadows and Glows */
+.shadow-accent {
+    box-shadow: var(--shadow-premium), 0 0 20px rgba(6, 182, 212, 0.1);
+}
+
+/* Accent Buttons */
+.btn-accent {
+    background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-indigo) 100%);
+    border: none;
+    color: var(--text-white);
+    font-weight: 500;
+    transition: var(--transition-smooth);
+}
+
+.btn-accent:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+    color: var(--text-white);
+}
+
+.btn-accent:active {
+    transform: translateY(0);
+}
+
+/* Dark Input Fields */
+.bg-dark-input {
+    background-color: var(--bg-input) !important;
+    color: var(--text-white) !important;
+}
+
+.bg-dark-input:focus, .form-select.bg-dark-input:focus {
+    border-color: var(--accent-cyan) !important;
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.3) !important;
+    background-color: var(--bg-input) !important;
+}
+
+.bg-dark-input::placeholder {
+    color: #475569 !important;
+}
+
+/* Input group styles */
+.input-group-text.bg-dark-input {
+    border-right: none !important;
+}
+
+.form-control.bg-dark-input {
+    border-left: none !important;
+}
+
+/* Navigation Accent text */
+.bg-gradient-text {
+    background: linear-gradient(to right, #00f2fe 0%, #4facfe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+}
+
+/* Pulse Animation */
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.95; }
+    50% { transform: scale(1.08); opacity: 1; filter: drop-shadow(0 0 8px var(--accent-cyan)); }
+    100% { transform: scale(1); opacity: 0.95; }
+}
+
+.animate-pulse {
+    animation: pulse 3s infinite ease-in-out;
+}
+
+/* Brand Icon style */
+.brand-icon-wrapper {
+    font-size: 1.3rem;
+}
+
+.text-accent-cyan {
+    color: var(--accent-cyan) !important;
+}
+
+.text-light-gray {
+    color: var(--text-light-gray) !important;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Hover highlights */
+.hover-underline:hover {
+    text-decoration: underline !important;
+}
+
+/* Custom CSS Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #334155;
+}
+
+/* Entry Transitions */
+@keyframes scaleIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.animate-scale-in {
+    animation: scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.35s ease-out forwards;
+}
+
+/* Auth icon badge custom */
+.auth-icon-badge {
+    width: 60px;
+    height: 60px;
+    background: rgba(6, 182, 212, 0.1);
+    border: 1px solid rgba(6, 182, 212, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+}
+
+/* Custom cards for tasks */
+.task-card {
+    transition: var(--transition-smooth);
+    border: 1px solid var(--border-glow);
+    background: rgba(22, 30, 49, 0.4);
+}
+
+.task-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-glow-hover) !important;
+    background: rgba(22, 30, 49, 0.65);
+    box-shadow: var(--shadow-premium), 0 0 15px rgba(6, 182, 212, 0.08);
+}
+
+/* Custom badging for status */
+.badge-pending {
+    background-color: rgba(245, 158, 11, 0.12) !important;
+    color: var(--status-pending) !important;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.badge-inprogress {
+    background-color: rgba(59, 130, 246, 0.12) !important;
+    color: var(--status-inprogress) !important;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.badge-completed {
+    background-color: rgba(16, 185, 129, 0.12) !important;
+    color: var(--status-completed) !important;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+/* Badging for priority */
+.badge-priority-low {
+    background-color: rgba(148, 163, 184, 0.1) !important;
+    color: var(--text-muted) !important;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.badge-priority-medium {
+    background-color: rgba(99, 102, 241, 0.12) !important;
+    color: var(--accent-indigo) !important;
+    border: 1px solid rgba(99, 102, 241, 0.25);
+}
+
+.badge-priority-high {
+    background-color: rgba(239, 68, 68, 0.12) !important;
+    color: var(--status-danger) !important;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+/* Circular charts and stats badges */
+.stat-card {
+    border: 1px solid var(--border-glow);
+    background: rgba(17, 24, 39, 0.5);
+    transition: var(--transition-smooth);
+}
+
+.stat-card:hover {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.1);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+/* Modals design adjustments */
+.modal-content.bg-glass {
+    border: 1px solid var(--border-glow);
+    box-shadow: var(--shadow-premium), 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header, .modal-footer {
+    border-color: var(--border-glow) !important;
+}
+
+/* Active transitions */
+.animate-arrow {
+    transition: transform 0.2s ease;
+}
+
+.btn-accent:hover .animate-arrow {
+    transform: translateX(4px);
+}

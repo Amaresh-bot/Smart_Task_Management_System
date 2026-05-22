@@ -1,0 +1,12 @@
+Flask==3.0.0
+Flask-SQLAlchemy==3.1.1
+Flask-Login==0.6.3
+Flask-SocketIO==5.3.6
+Flask-Migrate==4.0.5
+Flask-CORS==4.0.0
+psycopg[binary]
+python-dotenv==1.0.0
+pandas==2.1.4
+numpy==1.26.2
+Werkzeug==3.0.1
+eventlet==0.34.2

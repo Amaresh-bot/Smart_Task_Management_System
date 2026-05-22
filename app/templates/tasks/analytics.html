@@ -1,0 +1,291 @@
+{% extends 'base.html' %}
+
+{% block title %}Analytics | Smart Task Manager{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="row align-items-center mb-4">
+    <div class="col-md-8">
+        <h1 class="h2 text-white heading-font mb-1" id="analytics-title">
+            <i class="fa-solid fa-chart-pie text-accent-cyan me-2"></i>Task Analytics Dashboard
+        </h1>
+        <p class="text-light-gray small mb-0">High-performance calculations powered by Pandas & NumPy over your personal tasks database.</p>
+    </div>
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <a href="{{ url_for('tasks.dashboard_view') }}" class="btn btn-outline-secondary border-dark-glow text-white rounded-pill px-4" id="btn-back-dashboard">
+            <i class="fa-solid fa-arrow-left me-1"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<!-- Loader Spinner -->
+<div id="analytics-loader" class="text-center py-5">
+    <div class="spinner-border text-accent-cyan" role="status">
+        <span class="visually-hidden">Calculating...</span>
+    </div>
+    <p class="text-muted small mt-2">Running statistical models...</p>
+</div>
+
+<!-- Main Analytics View Grid (Hidden until loaded) -->
+<div id="analytics-content" class="d-none animate-fade-in">
+    <!-- Top KPIs row -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card stat-card bg-glass border-dark-glow rounded-3 p-3">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-muted small">Total Backlog</span>
+                    <div class="stat-icon bg-primary bg-opacity-10 text-primary small" style="width:32px; height:32px;">
+                        <i class="fa-solid fa-folder-tree"></i>
+                    </div>
+                </div>
+                <h2 class="text-white fw-bold mb-1" id="kpi-total">0</h2>
+                <div class="text-muted small">Tasks in workspace</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card bg-glass border-dark-glow rounded-3 p-3">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-muted small">Completed Tasks</span>
+                    <div class="stat-icon bg-success bg-opacity-10 text-success small" style="width:32px; height:32px;">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                </div>
+                <h2 class="text-white fw-bold mb-1" id="kpi-completed">0</h2>
+                <div class="text-muted small">Archived and finalized</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card bg-glass border-dark-glow rounded-3 p-3">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-muted small">Active Backlog</span>
+                    <div class="stat-icon bg-warning bg-opacity-10 text-warning small" style="width:32px; height:32px;">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+                </div>
+                <h2 class="text-white fw-bold mb-1" id="kpi-active">0</h2>
+                <div class="text-muted small">Pending & In Progress</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card bg-glass border-dark-glow rounded-3 p-3">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-muted small">Completion Rate</span>
+                    <div class="stat-icon bg-info bg-opacity-10 text-info small" style="width:32px; height:32px;">
+                        <i class="fa-solid fa-percent"></i>
+                    </div>
+                </div>
+                <h2 class="text-white fw-bold mb-1" id="kpi-rate">0%</h2>
+                <div class="progress bg-dark-input mt-2" style="height: 6px;">
+                    <div class="progress-bar bg-accent-cyan" role="progressbar" style="width: 0%" id="kpi-rate-bar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Backlog Workload Stress (NumPy Analytics) -->
+        <div class="col-lg-6">
+            <div class="card bg-glass border border-dark-glow rounded-3 p-4 h-100 shadow-accent">
+                <h5 class="text-white heading-font mb-3">
+                    <i class="fa-solid fa-gauge-simple-high text-accent-cyan me-2"></i>Workload Stress Assessment
+                </h5>
+                <p class="text-muted small mb-4">Calculated using a <strong>NumPy-weighted intensity mean</strong> over your uncompleted tasks (Low Priority = 1.0, Medium = 2.0, High = 3.0).</p>
+                
+                <div class="text-center py-4 my-2 border border-dark-glow bg-dark-input rounded-3">
+                    <div class="small text-muted mb-1">Backlog Intensity Mean</div>
+                    <h1 class="display-3 text-white fw-bold mb-1" id="calc-intensity-score">0.00</h1>
+                    <div class="badge px-3 py-2 mt-2" id="calc-intensity-badge">Calculating...</div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="text-accent-cyan mt-1">
+                            <i class="fa-solid fa-circle-info"></i>
+                        </div>
+                        <div class="small text-muted">
+                            <strong class="text-white d-block mb-1">What does this metric mean?</strong>
+                            Unlike basic counts, this index analyzes the weight of your pending backlogs. Lower averages represent stress-free workloads (LOW weight tasks), whereas higher averages warningly imply significant backlog complexities (HIGH weight tasks) needing urgent delegation or re-prioritization.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Distributions Panel -->
+        <div class="col-lg-6">
+            <div class="card bg-glass border border-dark-glow rounded-3 p-4 h-100 shadow-accent">
+                <h5 class="text-white heading-font mb-4">
+                    <i class="fa-solid fa-chart-column text-accent-cyan me-2"></i>Task Distributions
+                </h5>
+                
+                <!-- Priority Breakdown -->
+                <div class="mb-4">
+                    <strong class="text-white d-block small mb-3">Priority Distribution (Pandas Analytics)</strong>
+                    <div class="space-y-3">
+                        <!-- High -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between small text-light-gray mb-1">
+                                <span><i class="fa-solid fa-circle-exclamation text-danger me-1"></i> High Priority</span>
+                                <span class="fw-medium text-white" id="dist-priority-high-lbl">0 tasks (0%)</span>
+                            </div>
+                            <div class="progress bg-dark-input" style="height: 8px;">
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: 0%" id="dist-priority-high-bar"></div>
+                            </div>
+                        </div>
+                        <!-- Medium -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between small text-light-gray mb-1">
+                                <span><i class="fa-solid fa-circle-exclamation text-accent-indigo me-1"></i> Medium Priority</span>
+                                <span class="fw-medium text-white" id="dist-priority-medium-lbl">0 tasks (0%)</span>
+                            </div>
+                            <div class="progress bg-dark-input" style="height: 8px;">
+                                <div class="progress-bar bg-accent-indigo" role="progressbar" style="width: 0%" id="dist-priority-medium-bar"></div>
+                            </div>
+                        </div>
+                        <!-- Low -->
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between small text-light-gray mb-1">
+                                <span><i class="fa-solid fa-circle-exclamation text-muted me-1"></i> Low Priority</span>
+                                <span class="fw-medium text-white" id="dist-priority-low-lbl">0 tasks (0%)</span>
+                            </div>
+                            <div class="progress bg-dark-input" style="height: 8px;">
+                                <div class="progress-bar bg-secondary" role="progressbar" style="width: 0%" id="dist-priority-low-bar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Breakdown -->
+                <div>
+                    <strong class="text-white d-block small mb-3">Status Distribution (Pandas Analytics)</strong>
+                    <div class="space-y-3">
+                        <!-- Pending -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between small text-light-gray mb-1">
+                                <span><i class="fa-regular fa-clock text-warning me-1"></i> Pending</span>
+                                <span class="fw-medium text-white" id="dist-status-pending-lbl">0 tasks (0%)</span>
+                            </div>
+                            <div class="progress bg-dark-input" style="height: 8px;">
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: 0%" id="dist-status-pending-bar"></div>
+                            </div>
+                        </div>
+                        <!-- In Progress -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between small text-light-gray mb-1">
+                                <span><i class="fa-solid fa-spinner text-primary me-1"></i> In Progress</span>
+                                <span class="fw-medium text-white" id="dist-status-progress-lbl">0 tasks (0%)</span>
+                            </div>
+                            <div class="progress bg-dark-input" style="height: 8px;">
+                                <div class="progress-bar bg-primary" role="progressbar" style="width: 0%" id="dist-status-progress-bar"></div>
+                            </div>
+                        </div>
+                        <!-- Completed -->
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between small text-light-gray mb-1">
+                                <span><i class="fa-regular fa-circle-check text-success me-1"></i> Completed</span>
+                                <span class="fw-medium text-white" id="dist-status-completed-lbl">0 tasks (0%)</span>
+                            </div>
+                            <div class="progress bg-dark-input" style="height: 8px;">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 0%" id="dist-status-completed-bar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Load statistics from our custom Pandas/NumPy analytics REST API endpoint
+        fetchAnalytics();
+        
+        function fetchAnalytics() {
+            fetch("/api/tasks/analytics")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to load analytics");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === "success") {
+                        populateDashboard(data.analytics);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching analytics:", error);
+                    document.getElementById("analytics-loader").innerHTML = `
+                        <div class="text-danger my-4">
+                            <i class="fa-solid fa-circle-exclamation fa-3x"></i>
+                            <h5 class="mt-2">Failed to load analytics</h5>
+                            <p class="small text-muted">Please refresh the page or verify your database connection.</p>
+                        </div>
+                    `;
+                });
+        }
+        
+        function populateDashboard(stats) {
+            // Hide Loader, Show Content
+            document.getElementById("analytics-loader").classList.add("d-none");
+            document.getElementById("analytics-content").classList.remove("d-none");
+            
+            // Populate Key Metrics
+            document.getElementById("kpi-total").innerText = stats.total_tasks;
+            document.getElementById("kpi-completed").innerText = stats.completed_tasks;
+            document.getElementById("kpi-active").innerText = stats.pending_tasks + stats.inprogress_tasks;
+            document.getElementById("kpi-rate").innerText = stats.completion_rate + "%";
+            document.getElementById("kpi-rate-bar").style.width = stats.completion_rate + "%";
+            
+            // Populate Stress Assessment score
+            document.getElementById("calc-intensity-score").innerText = stats.avg_priority_intensity.toFixed(2);
+            
+            // Populate Stress Assessment badge style
+            const stressBadge = document.getElementById("calc-intensity-badge");
+            stressBadge.innerText = stats.backlog_intensity_description;
+            
+            if (stats.avg_priority_intensity === 0) {
+                stressBadge.className = "badge px-3 py-2 mt-2 bg-success text-white border border-success border-opacity-20";
+            } else if (stats.avg_priority_intensity <= 1.5) {
+                stressBadge.className = "badge px-3 py-2 mt-2 bg-success text-white border border-success border-opacity-20";
+            } else if (stats.avg_priority_intensity <= 2.5) {
+                stressBadge.className = "badge px-3 py-2 mt-2 bg-warning text-dark border border-warning border-opacity-20";
+            } else {
+                stressBadge.className = "badge px-3 py-2 mt-2 bg-danger text-white border border-danger border-opacity-20";
+            }
+            
+            // Calculate percentages for distributions
+            const total = stats.total_tasks || 1;
+            
+            const highPct = ((stats.priority_distribution.HIGH || 0) / total * 100).toFixed(0);
+            const medPct = ((stats.priority_distribution.MEDIUM || 0) / total * 100).toFixed(0);
+            const lowPct = ((stats.priority_distribution.LOW || 0) / total * 100).toFixed(0);
+            
+            const pendPct = ((stats.status_distribution.PENDING || 0) / total * 100).toFixed(0);
+            const progPct = ((stats.status_distribution.IN_PROGRESS || 0) / total * 100).toFixed(0);
+            const compPct = ((stats.status_distribution.COMPLETED || 0) / total * 100).toFixed(0);
+            
+            // Set labels
+            document.getElementById("dist-priority-high-lbl").innerText = `${stats.priority_distribution.HIGH || 0} tasks (${highPct}%)`;
+            document.getElementById("dist-priority-medium-lbl").innerText = `${stats.priority_distribution.MEDIUM || 0} tasks (${medPct}%)`;
+            document.getElementById("dist-priority-low-lbl").innerText = `${stats.priority_distribution.LOW || 0} tasks (${lowPct}%)`;
+            
+            document.getElementById("dist-status-pending-lbl").innerText = `${stats.status_distribution.PENDING || 0} tasks (${pendPct}%)`;
+            document.getElementById("dist-status-progress-lbl").innerText = `${stats.status_distribution.IN_PROGRESS || 0} tasks (${progPct}%)`;
+            document.getElementById("dist-status-completed-lbl").innerText = `${stats.status_distribution.COMPLETED || 0} tasks (${compPct}%)`;
+            
+            // Set progress bars
+            document.getElementById("dist-priority-high-bar").style.width = highPct + "%";
+            document.getElementById("dist-priority-medium-bar").style.width = medPct + "%";
+            document.getElementById("dist-priority-low-bar").style.width = lowPct + "%";
+            
+            document.getElementById("dist-status-pending-bar").style.width = pendPct + "%";
+            document.getElementById("dist-status-progress-bar").style.width = progPct + "%";
+            document.getElementById("dist-status-completed-bar").style.width = compPct + "%";
+        }
+    });
+</script>
+{% endblock %}

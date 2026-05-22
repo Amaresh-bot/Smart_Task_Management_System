@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Smart Task Manager{% endblock %}</title>
+    
+    <!-- Meta Descriptions for SEO -->
+    <meta name="description" content="A premium, smart, and real-time task management system powered by Flask, PostgreSQL, and WebSockets.">
+    
+    <!-- Google Fonts: Outfit (headings) & Inter (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- FontAwesome 6 Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    {% block styles %}{% endblock %}
+</head>
+<body class="bg-dark-theme text-light-theme min-vh-100 d-flex flex-column">
+    
+    <!-- Navigation Bar Component -->
+    {% include 'components/navbar.html' %}
+    
+    <!-- Main Content Container -->
+    <main class="flex-grow-1 py-4">
+        <div class="container">
+            <!-- Flash Message Toast/Alert Container -->
+            <div id="flash-message-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="toast show align-items-center text-white border-0 bg-{{ category if category != 'error' else 'danger' }} shadow-lg animate-fade-in" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="d-flex">
+                                    <div class="toast-body">
+                                        <i class="fa-solid {% if category == 'success' %}fa-circle-check{% elif category == 'info' %}fa-circle-info{% else %}fa-triangle-exclamation{% endif %} me-2"></i>
+                                        {{ message }}
+                                    </div>
+                                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+            
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+    
+    <!-- Footer Component -->
+    <footer class="py-3 border-top border-dark-glow mt-auto">
+        <div class="container text-center text-muted small">
+            <p class="mb-0">&copy; 2026 Smart Task Management System. All Rights Reserved. Built for Excellence.</p>
+        </div>
+    </footer>
+    
+    <!-- Bootstrap 5 Bundle JS with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Socket.IO Client CDN (necessary for WebSocket updates) -->
+    <script src="https://cdn.socketio.org/4.7.2/socketio.min.js"></script>
+    
+    <!-- Custom Application JS -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>
