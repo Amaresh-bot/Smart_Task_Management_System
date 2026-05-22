@@ -9,15 +9,18 @@ db = SQLAlchemy()
 
 # Initialize Login Manager for session-based user authentication
 login_manager = LoginManager()
-login_manager.login_view = "auth.login_view"  # Redirect target for @login_required routes
+login_manager.login_view = "auth.login_view"
 login_manager.login_message_category = "warning"
 
-# Initialize SocketIO for bi-directional live events
-# async_mode is set to 'eventlet' (from our requirements.txt eventlet server)
-socketio = SocketIO(cors_allowed_origins="*", async_mode='eventlet')
+# Initialize SocketIO for real-time communication
+# Using threading mode for Render compatibility
+socketio = SocketIO(
+    cors_allowed_origins="*",
+    async_mode="threading"
+)
 
 # Initialize Flask-Migrate for DB schema updates
 migrate = Migrate()
 
-# Initialize CORS to support cross-origin resource sharing if needed
+# Initialize CORS support
 cors = CORS()
